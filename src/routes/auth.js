@@ -6,14 +6,10 @@ router.get("/auth/twitter", passport.authenticate("twitter"));
 
 router.get(
   "/auth/twitter/callback",
-  passport.authenticate("twitter", { failureRedirect: "/login" }),
+  passport.authenticate("twitter", { failureRedirect: "/login", session: false }),
   function (req, res) {
-    res.redirect("/");
+    res.json({ token: req.user.token });
   }
 );
-
-router.get("/login", function (req, res) {
-  res.send("Bem-vindo à página de login!");
-});
 
 module.exports = router;

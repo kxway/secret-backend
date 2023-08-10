@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const db = require("./config/db");
 const passport = require("./config/passport");
 require("dotenv").config();
 
@@ -9,6 +8,8 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -16,8 +17,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 const port = process.env.PORT || 3000;
 
