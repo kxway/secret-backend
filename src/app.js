@@ -23,10 +23,12 @@ const port = process.env.PORT || 3000;
 const authRoutes = require('./routes/auth');
 const indexRoutes = require('./routes/index');
 const locationRoutes = require('./routes/location');
+const timelineRoutes = require('./routes/timeline');
 
 app.use(authRoutes);
 app.use(indexRoutes);
 app.use(locationRoutes);
+app.use(timelineRoutes);
 
 app.listen(port, () => {
   console.log(`App está rodando na porta ${port}`);

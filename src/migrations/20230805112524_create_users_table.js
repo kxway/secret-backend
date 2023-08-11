@@ -4,6 +4,7 @@ exports.up = function(knex) {
       table.string('name');
       table.string('twitterId').unique();
       table.string('photo');
+      table.string('current_location').nullable();
     });
   };
   
