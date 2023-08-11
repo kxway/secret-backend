@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("./config/passport");
 require("dotenv").config();
+require("./cronJobs");
 
 const app = express();
 
