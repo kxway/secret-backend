@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db.js");
 const authenticateJWT = require("../middlewares/authenticateJWT.js");
-const knexPaginate = require('knex-paginate');
+const knexPaginate = require("knex-paginate");
 
 knexPaginate.attachPaginate();
 
@@ -15,46 +15,60 @@ router.post("/post", authenticateJWT, async (req, res) => {
       return res.status(400).json({ error: "Content is required." });
     }
 
+    const topPosts = await db("timeline")
+      .where({ location: userLocation })
+      .orderBy("relevance_score", "desc")
+      .limit(10);
+
+    let averageRelevance = 10; // valor padrão
+    if (topPosts.length > 0) {
+      averageRelevance =
+        topPosts.reduce((sum, post) => sum + post.relevance_score, 0) /
+        topPosts.length;
+    }
+
+    averageRelevance = Math.round(averageRelevance);
+
     const [postId] = await db("timeline").insert({
       user_id: req.user.id,
       post_content: content,
       likes: 0,
       dislikes: 0,
-      relevance_score: 0, // Inicialmente, definimos a relevância como 0
+      relevance_score: averageRelevance,
       location: userLocation,
     });
 
     res.json({ message: "Post created successfully!", postId });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ error: "Error creating post." });
   }
 });
 
 router.get("/posts", authenticateJWT, async (req, res) => {
-    try {
-      const userLocation = req.user.current_location;
-      const { page = 1, size = 20 } = req.query; 
-  
-      const posts = await db("timeline")
-        .where("location", userLocation)
-        .orderBy([
-          { column: 'relevance_score', order: 'desc' },
-          { column: 'created_at', order: 'desc' }
-        ])
-        .paginate({
-           perPage: size, 
-           currentPage: page
-        });
-  
-      res.json({ 
-        total: posts.total, 
-        lastPage: posts.lastPage,
-        posts: posts.data 
+  try {
+    const userLocation = req.user.current_location;
+    const { page = 1, size = 20 } = req.query;
+
+    const posts = await db("timeline")
+      .where("location", userLocation)
+      .orderBy([
+        { column: "relevance_score", order: "desc" },
+        { column: "created_at", order: "desc" },
+      ])
+      .paginate({
+        perPage: size,
+        currentPage: page,
       });
-    } catch (error) {
-      res.status(500).json({ error: "Error fetching posts." });
-    }
-  });
+
+    res.json({
+      total: posts.total,
+      lastPage: posts.lastPage,
+      posts: posts.data,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching posts." });
+  }
+});
 
 module.exports = router;
