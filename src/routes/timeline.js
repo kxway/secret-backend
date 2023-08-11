@@ -71,4 +71,72 @@ router.get("/posts", authenticateJWT, async (req, res) => {
   }
 });
 
+router.post("/post/:postId/reaction", authenticateJWT, async (req, res) => {
+  const { type } = req.body;
+  const postId = req.params.postId;
+  const userId = req.user.id;
+
+  if (!["like", "dislike"].includes(type)) {
+    return res.status(400).json({ error: "Invalid reaction type." });
+  }
+
+  try {
+    const existingReaction = await db("post_reactions")
+      .where({
+        post_id: postId,
+        user_id: userId,
+      })
+      .first();
+
+    const action = !existingReaction
+      ? "add"
+      : existingReaction.type === type
+      ? "remove"
+      : "update";
+
+    switch (action) {
+      case "add":
+        await db("post_reactions").insert({
+          post_id: postId,
+          type: type,
+          user_id: userId,
+        });
+        await db("timeline")
+          .where({ id: postId })
+          .increment(`${type}s`, 1)
+          .increment("relevance_score", 1);
+        break;
+
+      case "remove":
+        await db("post_reactions")
+          .where({ post_id: postId, user_id: userId })
+          .del();
+        await db("timeline")
+          .where({ id: postId })
+          .decrement(`${type}s`, 1)
+          .decrement("relevance_score", 1);
+        break;
+
+      case "update":
+        await db("post_reactions")
+          .where({ post_id: postId, user_id: userId })
+          .update({ type });
+        await db("timeline")
+          .where({ id: postId })
+          .increment(`${type}s`, 1)
+          .decrement(`${existingReaction.type}s`, 1);
+        break;
+    }
+
+    const message =
+      action === "remove"
+        ? `Post ${type} removed successfully!`
+        : `Post ${type}d successfully!`;
+    res.json({ message });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error processing reaction." });
+  }
+});
+
 module.exports = router;
