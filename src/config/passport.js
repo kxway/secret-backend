@@ -68,7 +68,7 @@ passport.use(
     {
       consumerKey: process.env.TWITTER_CONSUMER_KEY,
       consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-      callbackURL: "http://localhost:3000/auth/twitter/callback",
+      callbackURL: process.env.CALLBACK_URL,
     },
     async (token, tokenSecret, profile, done) => {
       try {
