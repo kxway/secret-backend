@@ -36,7 +36,7 @@ router.post("/post", authenticateJWT, async (req, res) => {
       dislikes: 0,
       relevance_score: averageRelevance,
       location: userLocation,
-    });
+    }).returning('id');
 
     res.json({ message: "Post created successfully!", postId });
   } catch (error) {

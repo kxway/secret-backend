@@ -47,7 +47,7 @@ async function findOrCreateUser(profile) {
     twitterId: profile.id,
     name: profile.displayName,
     photo: getLargeProfileImage(profile._json.profile_image_url),
-  });
+  }).returning('id');
 
   const newUser = {
     twitterId: profile.id,
