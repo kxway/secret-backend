@@ -43,7 +43,7 @@ async function findOrCreateUser(profile) {
     return existingUser;
   }
 
-  const [id] = await db("users").insert({
+  const [{id}] = await db("users").insert({
     twitterId: profile.id,
     name: profile.displayName,
     photo: getLargeProfileImage(profile._json.profile_image_url),
