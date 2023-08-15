@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const authenticateJWT = require("../middlewares/authenticateJWT.js");
 
-const locationService = require('../services/locationService');
-const userService = require('../services/userService');
+const locationService = require('../services/LocationService');
+const userService = require('../services/UserService');
 
 router.post("/location/update", authenticateJWT, async (req, res) => {
   const { lat, lon } = req.query;
