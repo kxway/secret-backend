@@ -46,4 +46,4 @@ class LocationService {
   }
 }
 
-module.exports = LocationService;
+module.exports = new LocationService();

@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
-    "seeds": "knex seed:run"
+    "seed": "knex seed:run"
   },
   "keywords": [],
   "author": "",

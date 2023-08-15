@@ -1,21 +1,9 @@
-const knex = require("../config/db.js");
+const userRepository = require('../repositories/UserRepository');
 
 class UserService {
   async updateUserLocation(userId, neighborhood) {
-    try {
-      let current_location =
-        neighborhood.suburb || neighborhood.city || neighborhood.town;
-
-      if (!current_location) {
-        throw new Error("Location details are incomplete.");
-      }
-
-      await knex("users").where("id", userId).update({ current_location });
-    } catch (error) {
-      console.error("Error updating user's location:", error.message);
-      throw new Error("Error updating user's location");
-    }
+    return userRepository.updateLocation(userId, neighborhood);
   }
 }
 
-module.exports = UserService;
+module.exports = new UserService();

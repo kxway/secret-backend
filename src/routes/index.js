@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const authenticateJWT = require("../middlewares/authenticateJWT.js");
 const formatTimeAgo = require("../helpers/formatTimeAgo.js");
-
 const startTimestamp = new Date().toISOString();
 
 router.get("/", function (req, res) {
@@ -17,5 +16,9 @@ router.get("/profile", authenticateJWT, function (req, res) {
     res.sendStatus(401);
   }
 });
+
+router.use(require('./auth'));
+router.use(require('./location'));
+router.use(require('./timeline'));
 
 module.exports = router;

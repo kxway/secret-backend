@@ -8,10 +8,10 @@ module.exports = {
     },
     useNullAsDefault: true,
     migrations: {
-      directory: "./src/migrations",
+      directory: "./src/db/migrations",
     },
     seeds: {
-      directory: "./src/seeds",
+      directory: "./src/db/seeds",
     },
   },
   production: {
@@ -23,10 +23,10 @@ module.exports = {
       },
     },
     migrations: {
-      directory: "./src/migrations",
+      directory: "./src/db/migrations",
     },
     seeds: {
-      directory: "./src/seeds",
+      directory: "./src/db/seeds",
     },
     pool: {
       min: 2,

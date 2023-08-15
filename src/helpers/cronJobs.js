@@ -1,7 +1,5 @@
 const cron = require("node-cron");
-const TimelineService = require("./services/TimelineService");
-
-const timelineService = new TimelineService();
+const timelineService = require("../services/TimelineService");
 
 // Agenda a tarefa para ser executada a cada 30 minutos
 cron.schedule("*/30 * * * *", async () => {
